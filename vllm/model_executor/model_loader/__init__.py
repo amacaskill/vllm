@@ -124,11 +124,17 @@ def get_model_loader(load_config: LoadConfig) -> BaseModelLoader:
 def get_model(
     *, vllm_config: VllmConfig, model_config: ModelConfig | None = None
 ) -> nn.Module:
+    # Had to set MODEL_IMPL_TYPE=vllm to actually call this code before we hit the other error. By default, 
+    # it uses flax_nnx for qwen. When I enabled MODEL_IMPL_TYPE=vllm, it showed me vllm_config doesn't have
+    # model_config set.
+    logger.info(f"model_config passed to get_model: {model_config}")
     loader = get_model_loader(vllm_config.load_config)
     if model_config is None:
         model_config = vllm_config.model_config
+        logger.info(f"vllm_config.model_config is: {vllm_config.model_config}")
+        logger.info(f"vllm_config.model_config.model_weights is: {model_config.model_weights}")
+    logger.info(f"vllm_config passed to get_model: {vllm_config}")
     return loader.load_model(vllm_config=vllm_config, model_config=model_config)
-
 
 __all__ = [
     "get_model",

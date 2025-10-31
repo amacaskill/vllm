@@ -10,6 +10,7 @@ from transformers.utils import SAFE_WEIGHTS_INDEX_NAME
 
 from vllm.config import ModelConfig
 from vllm.config.load import LoadConfig
+from vllm.logger import init_logger
 from vllm.model_executor.model_loader.base_loader import BaseModelLoader
 from vllm.model_executor.model_loader.weight_utils import (
     download_safetensors_index_file_from_hf,
@@ -17,6 +18,8 @@ from vllm.model_executor.model_loader.weight_utils import (
     runai_safetensors_weights_iterator,
 )
 from vllm.transformers_utils.runai_utils import is_runai_obj_uri, list_safetensors
+
+logger = init_logger(__name__)
 
 
 class RunaiModelStreamerLoader(BaseModelLoader):
@@ -91,6 +94,7 @@ class RunaiModelStreamerLoader(BaseModelLoader):
     ) -> Generator[tuple[str, torch.Tensor], None, None]:
         """Get an iterator for the model weights based on the load format."""
         hf_weights_files = self._prepare_weights(model_or_path, revision)
+        logger.info(f"hf_weights_files = {hf_weights_files}")
         return runai_safetensors_weights_iterator(
             hf_weights_files,
             self.load_config.use_tqdm_on_load,
@@ -98,13 +102,16 @@ class RunaiModelStreamerLoader(BaseModelLoader):
 
     def download_model(self, model_config: ModelConfig) -> None:
         """Download model if necessary"""
+        logger.info(f"calling _prepare_weights in download_model with model_config.model: {model_config.model}")
         self._prepare_weights(model_config.model, model_config.revision)
 
     def load_weights(self, model: nn.Module, model_config: ModelConfig) -> None:
         """Load weights into a model."""
         model_weights = model_config.model
+        logger.info(f"model_weights = = model_config.model: {model_weights}")
         if hasattr(model_config, "model_weights"):
             model_weights = model_config.model_weights
+            logger.info(f"model_weights = model_config.model_weights: {model_weights}")
         model.load_weights(
             self._get_weights_iterator(model_weights, model_config.revision)
         )
