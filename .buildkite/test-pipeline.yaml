@@ -554,6 +554,30 @@ steps:
     - pytest -v -s model_executor
     - pytest -v -s entrypoints/openai/test_tensorizer_entrypoint.py
 
+# - label: RunAI Model Streamer E2E Test # 23min
+#   timeout_in_minutes: 35
+#   mirror_hardwares: [amdexperimental]
+#   source_file_dependencies:
+#   - vllm/model_executor
+#   - tests/model_executor
+#   - tests/entrypoints/openai/test_tensorizer_entrypoint.py
+#   commands:
+#     - apt-get update && apt-get install -y curl libsodium23
+#     - export VLLM_WORKER_MULTIPROC_METHOD=spawn
+#     - pytest -v -s model_executor
+#     - pytest -v -s entrypoints/openai/test_tensorizer_entrypoint.py
+#  # 23min
+#   timeout_in_minutes: 35
+#   mirror_hardwares: [amdexperimental]
+#   source_file_dependencies:
+#   - vllm/model_executor
+#   - tests/model_executor
+#   - tests/entrypoints/openai/test_tensorizer_entrypoint.py
+#   commands:
+#     - apt-get update && apt-get install -y curl libsodium23
+#     - export VLLM_WORKER_MULTIPROC_METHOD=spawn
+#     - pytest -v -s model_executor
+#     - pytest -v -s entrypoints/openai/test_tensorizer_entrypoint.py
 - label: Benchmarks # 11min
   timeout_in_minutes: 20
   mirror_hardwares: [amdexperimental]
