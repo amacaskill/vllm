@@ -32,3 +32,8 @@ def test_runai_model_loader_download_files(vllm_runner):
     with vllm_runner(test_model, load_format=load_format) as llm:
         deserialized_outputs = llm.generate(prompts, sampling_params)
         assert deserialized_outputs
+
+def test_runai_model_loader_download_gcs_files(vllm_runner):
+    with vllm_runner("gs://vertex-model-garden-public-us/codegemma/codegemma-2b/", load_format=load_format) as llm:
+        deserialized_outputs = llm.generate(prompts, sampling_params)
+        assert deserialized_outputs
